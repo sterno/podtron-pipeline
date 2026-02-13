@@ -5,10 +5,10 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 import AssemblyAI from 'assemblyai';
 import * as dotenv from 'dotenv';
-import { S3 } from 'aws-sdk';
 dotenv.config();
 
 export const handler = async (event: APIGatewayProxyEvent) => {
@@ -27,7 +27,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
         const transcript = await client.transcripts.get(transcriptId);
 
         //Upload the transcript to the outbound s3 bucket
-        const s3 = new S3();
+        const s3 = new S3Client();
         const bucketName = process.env.OUTBOUND_BUCKET_NAME as string;
         const key = `${podcastId}.json`;
         const params = {
@@ -36,7 +36,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
             Body: JSON.stringify(transcript),
             ContentType: 'application/json'
         };
-        await s3.putObject(params).promise();
+        await s3.send(new PutObjectCommand(params));
     }
     else if (status==='error') {
         //There was an error processing.  Write that out to DynamoDB
