@@ -35,7 +35,6 @@
     "@aws-sdk/lib-dynamodb": "^3.430.0",
     "assemblyai": "^2.0.2",
     "aws-cdk-lib": "2.238.0",
-    "aws-sdk": "^2.1474.0",
     "axios": "^1.5.1",
     "constructs": "^10.0.0",
     "d3": "^7.8.5",
